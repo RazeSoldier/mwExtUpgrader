@@ -104,7 +104,7 @@ class MediaWikiHunter {
 		unset( $downloader );
 		@$url = $jsonArray['query']['extdistbranches']['extensions'][$extName][$branchName];
 		if ( isset( $url ) ) {
-			return $jsonArray['query']['extdistbranches']['extensions'][$extName][$branchName];
+			return $url;
 		}
 	}
 }
