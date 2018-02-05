@@ -121,6 +121,10 @@ class MWExtUpgrader {
 	 * Run script
 	 */
 	public function run() {
+		// Prompt people that this script is not stable and can't be used for production
+		// When the code is stable, the line must to be remove
+		Interactive::shellOutput( 'Note that this release of code is not stable.'
+			. ' Do not use for production.' , 'yellow');
 		$this->prelude();
 		$this->doUpgrade();
 	}
