@@ -208,6 +208,8 @@ class MWExtUpgrader {
 				}
 			} // End while
 			Interactive::shellOutput( "Successfully upgraded {$countDone} extensions." , 'green');
+			Interactive::shellOutput( "Some extensions may require running 'maintenance/update.php' script"
+				. " to update the database schema." , 'yellow');
 		} else {
 			trigger_error( 'Unkown Error', E_USER_ERROR );
 		}
