@@ -86,6 +86,12 @@ class MWExtUpgrader {
 	 * @return bool
 	 */
 	public static function delDir($dir) {
+		if ( !is_dir( $dir ) ) {
+			return false;
+		}
+		if ( !is_readable( $dir ) || !is_writable( $dir ) ) {
+			return false;
+		}
 		$files = array_diff( scandir( $dir ), array( '.', '..' ) ); 
 		foreach ( $files as $file ) { 
 			( is_dir( "$dir/$file" ) ) ? self::delDir("$dir/$file") : unlink( "$dir/$file" ); 
@@ -110,7 +116,12 @@ class MWExtUpgrader {
 					self::copyDir( $src . '/' . $file, $dst . '/' . $file );
 					continue;
 				} else {
-					copy( $src . '/' . $file, $dst . '/' . $file );
+					$srcPath = $src . '/' . $file;
+					$dstPath = $dst . '/' . $file;
+					if ( !is_readable( $srcPath ) || !is_writable( $dstPath ) ) {
+						return false;
+					}
+					copy( $srcPath, $dstPath );
 				}
 			}
 		}
@@ -190,7 +201,13 @@ class MWExtUpgrader {
 					$tarName = $result['filename'] . 'tar.gz';
 					copy( $result['filename'], $tarName );
 					$extracter = new ExtractTarball( $tarName );
-					self::delDir( $extPath );
+					$delResult = self::delDir( $extPath );
+					if ( $delResult === false ) {
+						Interactive::shellOutput( ' Failed to delete the directory of this extension,'
+							. ' Ignore!', 'yellow' );
+						echo Interactive::$msg['line'];
+						continue;
+					}
 					$copyResult = self::copyDir( $extracter->doExtract(), $this->runtimeInfo['extdir'] );
 					if ( $copyResult === false ) {
 						Interactive::shellOutput( ' Copy failed, Ignore!', 'yellow' );
