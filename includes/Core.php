@@ -177,7 +177,12 @@ class MWExtUpgrader {
 	 */
 	private function doUpgrade() {
 		$dirResource = opendir( $this->runtimeInfo['extdir'] );
-		$countExt = $this->countDir($this->runtimeInfo['extdir']);
+		$countExt = $this->countDir( $this->runtimeInfo['extdir'] );
+		if ( $countExt === 0 ) {
+			Interactive::shellOutput( Interactive::$msg['without-ext'] , 'yellow' );
+			Interactive::shellOutput( Interactive::$msg['bool-no-exit'] , 'yellow' );
+			die ( 1 );
+		}
 		if ( $dirResource ) {
 			echo "Will be upgraded {$countExt} extensions.\n";
 			echo Interactive::$msg['line'];

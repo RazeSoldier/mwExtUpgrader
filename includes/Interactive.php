@@ -51,7 +51,8 @@ class Interactive {
 			. ' or type the correct version number:',
 		'type-mwversion' => ' Please type the version number you want to upgrade:',
 		'bool-no-exit' => 'Quit.',
-		'line' => "----------------------\n"
+		'line' => "----------------------\n",
+		'without-ext' => 'No extension can be upgrade.'
 	];
 
 	/**
