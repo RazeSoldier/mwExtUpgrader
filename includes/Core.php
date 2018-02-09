@@ -119,10 +119,11 @@ class MWExtUpgrader {
 				} else {
 					$srcPath = $src . '/' . $file;
 					$dstPath = $dst . '/' . $file;
-					if ( !is_readable( $srcPath ) || !is_writable( $dstPath ) ) {
+					if ( is_readable( $srcPath ) && createFileAble( $dst ) ) {
+						copy( $srcPath, $dstPath );
+					} else {
 						return false;
 					}
-					copy( $srcPath, $dstPath );
 				}
 			}
 		}
@@ -212,7 +213,7 @@ class MWExtUpgrader {
 					}
 					$downloader = new Download( $downloadURL );
 					$result = $downloader->doDownload();
-					$tarName = $result['filename'] . 'tar.gz';
+					$tarName = $result['filename'] . '.tar.gz';
 					copy( $result['filename'], $tarName );
 					$extracter = new ExtractTarball( $tarName );
 					$delResult = self::delDir( $extPath );
