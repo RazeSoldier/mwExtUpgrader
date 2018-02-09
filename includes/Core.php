@@ -48,6 +48,7 @@ class MWExtUpgrader {
 		require_once APP_PATH . '/includes/downloader/CurlDownloader.php';
 		require_once APP_PATH . '/includes/downloader/FopenDownloader.php';
 		require_once APP_PATH . '/includes/ExtractTarball.php';
+		require_once APP_PATH . '/includes/FilePermission.php';
 	}
 
 	public function __construct() {
@@ -95,7 +96,7 @@ class MWExtUpgrader {
 		$files = array_diff( scandir( $dir ), array( '.', '..' ) ); 
 		foreach ( $files as $file ) { 
 			( is_dir( "$dir/$file" ) ) ? self::delDir("$dir/$file") : unlink( "$dir/$file" ); 
-		} 
+		}
 		return rmdir( $dir ); 
 	}
 
@@ -170,6 +171,14 @@ class MWExtUpgrader {
 		}
 		$this->runtimeInfo['mwVersion'] = $this->client->userInput( 'text',
 				'checkversion', $this->runtimeInfo['mwVersion'] );
+
+		// Checks if the temp directory can be read-write
+		$this->runtimeInfo['tempdir'] = sys_get_temp_dir();
+		if ( !createFileAble( $this->runtimeInfo['tempdir'] ) ) {
+			Interactive::shellOutput( Interactive::$msg['warning']['systempdir-not-rw'] );
+			echo Interactive::$msg['type-temp-dir'];
+			$this->runtimeInfo['tempdir'] = $this->client->userInput( 'checktempdir' );
+		}
 	}
 
 	/**

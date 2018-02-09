@@ -37,7 +37,8 @@ class Interactive {
 			'dir-not-read' => 'The path you typed is not readable.',
 			'invalid-mwversion' => 'You typed an invalid version number.',
 			'jsonfile-not-exist' => 'Missing extension.json file - skip.',
-			'jsonfile-not-read' => 'extension.json file can\'t read - skip'
+			'jsonfile-not-read' => 'extension.json file can\'t read - skip',
+			'systempdir-not-rw' => 'System default temporary directory can not read-write.'
 		],
 		'notice' => [
 			'welcome' => 'Welcome to use mwExtUpgrader. This script can help you '
@@ -47,6 +48,7 @@ class Interactive {
 		],
 		'type-yes' => ' Type \'yes\' to continue:',
 		'type-dir' => ' Absolute path of the extension directory:',
+		'type-temp-dir' => ' Type a directory for storing temporary file:',
 		'confirm-mwversion' => ' Please type \'yes\' to confirm this version to upgrade,'
 			. ' or type the correct version number:',
 		'type-mwversion' => ' Please type the version number you want to upgrade:',
@@ -169,6 +171,14 @@ class Interactive {
 				}
 
 				return $matches[0];
+			case 'checktempdir':
+				$doCheckDir = createFileAble( $input );
+					while ( !$doCheckDir ) {
+						echo Interactive::$msg['type-temp-dir'];
+						$input = $this->userInput( 'null' );
+						$doCheckDir = createFileAble( $input );
+					}
+					return realpath( $input );
 		}
 	}
 }
