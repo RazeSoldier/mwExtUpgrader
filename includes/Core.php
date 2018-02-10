@@ -140,6 +140,7 @@ class MWExtUpgrader {
 			. ' Do not use for production.' , 'yellow');
 		$this->prelude();
 		$this->doUpgrade();
+		$this->coda();
 	}
 
 	/**
@@ -239,11 +240,20 @@ class MWExtUpgrader {
 					$countDone = $countDone + 1;
 				}
 			} // End while
-			Interactive::shellOutput( "Successfully upgraded {$countDone} extensions." , 'green');
-			Interactive::shellOutput( "Some extensions may require running 'maintenance/update.php' script"
-				. " to update the database schema." , 'yellow');
+			$this->runtimeInfo['countDone'] = $countDone;
 		} else {
 			trigger_error( 'Unkown Error', E_USER_ERROR );
 		}
+	}
+
+	private function coda() {
+		if ( $this->runtimeInfo['countDone'] === 1 ) {
+			$extWord = 'extension';
+		} else {
+			$extWord = 'extensions';
+		}
+		Interactive::shellOutput( "Successfully upgraded {$this->runtimeInfo['countDone']} {$extWord}." , 'green');
+		Interactive::shellOutput( "Some extensions may require running 'maintenance/update.php' script"
+				. " to update the database schema." , 'yellow');
 	}
 }
