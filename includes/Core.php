@@ -212,7 +212,7 @@ class MWExtUpgrader {
 						echo Interactive::$msg['line'];
 						continue;
 					}
-					$downloader = new Download( $downloadURL );
+					$downloader = new Download( $downloadURL, 'file', $this->runtimeInfo['tempdir'] );
 					$result = $downloader->doDownload();
 					$tarName = $result['filename'] . '.tar.gz';
 					copy( $result['filename'], $tarName );

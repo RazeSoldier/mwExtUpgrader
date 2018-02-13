@@ -36,6 +36,11 @@ class Download {
 	private $mode;
 
 	/**
+	 * @var string
+	 */
+	private $tempDir;
+
+	/**
 	 * @var object
 	 */
 	private $downloader;
@@ -51,17 +56,18 @@ class Download {
 
 	private function getDownloader() {
 		if ( extension_loaded( 'curl' ) ) {
-			return new Downloader\CurlDownloader( $this->url, $this->mode );
+			return new Downloader\CurlDownloader( $this->url, $this->mode, $this->tempDir );
 		} elseif ( ini_get( 'allow_url_fopen' ) == 1 ) {
-			return new Downloader\FopenDownloader( $this->url, $this->mode );
+			return new Downloader\FopenDownloader( $this->url, $this->mode, $this->tempDir );
 		} else {
 			trigger_error( $this->msg['error']['without-downloader'], E_USER_ERROR );
 		}
 	}
 
-	public function __construct($url,$mode = 'file') {
+	public function __construct($url, $mode = 'file', $tempDir = null) {
 		$this->url = $url;
 		$this->mode = $mode;
+		$this->tempDir = $tempDir;
 		$this->downloader = $this->getDownloader();
 	}
 

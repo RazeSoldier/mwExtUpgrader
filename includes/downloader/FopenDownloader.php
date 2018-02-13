@@ -44,15 +44,21 @@ class FopenDownloader {
 	private $localStream;
 
 	/**
+	 * @var string
+	 */
+	private $tempDir;
+
+	/**
 	 * @var string Tmp file name
 	 */
 	private $tmpName;
 
-	public function __construct($url, $mode) {
+	public function __construct($url, $mode, $tempDir) {
 		$this->url = $url;
 		$this->mode = $mode;
+		$this->tempDir = $tempDir;
 		if ( $this->mode === 'file' ) {
-			$this->tmpName = tempnam( sys_get_temp_dir(), 'mwext' );
+			$this->tmpName = tempnam( $this->tempDir, 'mwext' );
 			$this->localStream = fopen( $this->tmpName, 'wb' );
 		}
 		$this->remoteStream = fopen( $url, 'rb' );
