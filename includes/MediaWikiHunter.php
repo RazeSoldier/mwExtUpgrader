@@ -104,7 +104,8 @@ class MediaWikiHunter {
 		$arrlength = count( $arr );
 		return [
 			'minVersion' => $arr[0],
-			'maxVersion' => $arr[$arrlength-1]
+			'maxVersion' => $arr[$arrlength-1],
+			'betaVersion' => $arr[$arrlength-1] + 0.01
 		];
 	}
 
