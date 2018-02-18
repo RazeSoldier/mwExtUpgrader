@@ -64,10 +64,10 @@ class Download {
 		}
 	}
 
-	public function __construct($url, $mode = 'file', $tempDir = null) {
+	public function __construct($url, $mode = 'file') {
 		$this->url = $url;
 		$this->mode = $mode;
-		$this->tempDir = $tempDir;
+		$this->tempDir = $GLOBALS['tempdir'];
 		$this->downloader = $this->getDownloader();
 	}
 

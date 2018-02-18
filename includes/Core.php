@@ -175,11 +175,11 @@ class MWExtUpgrader {
 				'checkversion', $this->runtimeInfo['mwVersion'] );
 
 		// Checks if the temp directory can be read-write
-		$this->runtimeInfo['tempdir'] = sys_get_temp_dir();
-		if ( !createFileAble( $this->runtimeInfo['tempdir'] ) ) {
+		$GLOBALS['tempdir'] = sys_get_temp_dir();
+		if ( !createFileAble( $GLOBALS['tempdir'] ) ) {
 			Interactive::shellOutput( Interactive::$msg['warning']['systempdir-not-rw'] );
 			echo Interactive::$msg['type-temp-dir'];
-			$this->runtimeInfo['tempdir'] = $this->client->userInput( 'checktempdir' );
+			$GLOBALS['tempdir'] = $this->client->userInput( 'checktempdir' );
 		}
 	}
 
@@ -212,7 +212,7 @@ class MWExtUpgrader {
 						echo Interactive::$msg['line'];
 						continue;
 					}
-					$downloader = new Download( $downloadURL, 'file', $this->runtimeInfo['tempdir'] );
+					$downloader = new Download( $downloadURL, 'file' );
 					$result = $downloader->doDownload();
 					$tarName = $result['filename'] . '.tar.gz';
 					copy( $result['filename'], $tarName );
