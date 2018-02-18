@@ -34,10 +34,16 @@ class MediaWikiHunter {
 	private $mwWikiApi = 'https://www.mediawiki.org/w/api.php?action=query&list=extdistbranches&format=json';
 
 	/**
+	 * @var array The API of mediawiki.org permissible version range
+	 */
+	private $mwVersionRange;
+
+	/**
 	 * @param string $extdir MediaWiki extension directory
 	 */
 	public function __construct($extdir) {
 		$this->mwIP = dirname($extdir);
+		$this->mwVersionRange = $this->getMWVersionRange();
 	}
 
 	/**
@@ -60,6 +66,46 @@ class MediaWikiHunter {
 			return 'REL1_30';
 		}
 		return 'master';
+	}
+
+	/**
+	 * Convert a branch name of like REL1_30 into version number
+	 * @param string $mwVersion
+	 * @return string
+	 */
+	private function convertMWVersionToInt($mwVersion) {
+		$replace = str_replace( 'REL', null, $mwVersion );
+		return str_replace( '_', '.', $replace );
+	}
+
+	/**
+	 * Get MediaWiki current version range from the API
+	 * @return array
+	 */
+	private function getMWVersionRange() {
+		$downloader = new Download( $this->mwWikiApi . '&edbexts=ExtensionDistributor', 'text' );
+		$downloadResult = $downloader->doDownload();
+		if ( !$downloadResult ) {
+			trigger_error( 'The script can\'t get MediaWiki current version range from the API'
+					, E_USER_ERROR );
+		}
+		$jsonArray = json_decode( $downloader->doDownload(), true );
+		unset( $downloader );
+
+		$arr = array();
+		foreach ( $jsonArray['query']['extdistbranches']['extensions']['ExtensionDistributor'] as $key => $value) {
+			$prefix = 'REL';
+			if ( strpos( $key, $prefix ) !== false ) {
+				$arr[] = $this->convertMWVersionToInt( $key );
+			}
+		}
+
+		sort( $arr );
+		$arrlength = count( $arr );
+		return [
+			'minVersion' => $arr[0],
+			'maxVersion' => $arr[$arrlength-1]
+		];
 	}
 
 	/**
