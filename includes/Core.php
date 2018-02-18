@@ -157,6 +157,14 @@ class MWExtUpgrader {
 		echo Interactive::$msg['type-dir'];
 		$this->runtimeInfo['extdir'] = $this->client->userInput( 'text', 'checkdir' );
 
+		// Checks if the temp directory can be read-write
+		$GLOBALS['tempdir'] = sys_get_temp_dir();
+		if ( !createFileAble( $GLOBALS['tempdir'] ) ) {
+			Interactive::shellOutput( Interactive::$msg['warning']['systempdir-not-rw'] );
+			echo Interactive::$msg['type-temp-dir'];
+			$GLOBALS['tempdir'] = $this->client->userInput( 'checktempdir' );
+		}
+
 		// Get the MediaWiki version number
 		$this->mwHunter = new MediaWikiHunter( $this->runtimeInfo['extdir'] );
 		$this->runtimeInfo['mwVersion'] = $this->mwHunter->getMWVersion();
@@ -176,14 +184,6 @@ class MWExtUpgrader {
 		}
 		$this->runtimeInfo['mwVersion'] = $this->client->userInput( 'text',
 				'checkversion', $this->runtimeInfo['mwVersion'] );
-
-		// Checks if the temp directory can be read-write
-		$GLOBALS['tempdir'] = sys_get_temp_dir();
-		if ( !createFileAble( $GLOBALS['tempdir'] ) ) {
-			Interactive::shellOutput( Interactive::$msg['warning']['systempdir-not-rw'] );
-			echo Interactive::$msg['type-temp-dir'];
-			$GLOBALS['tempdir'] = $this->client->userInput( 'checktempdir' );
-		}
 	}
 
 	/**
