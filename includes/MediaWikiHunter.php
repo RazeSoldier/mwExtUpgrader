@@ -36,7 +36,7 @@ class MediaWikiHunter {
 	/**
 	 * @var array The API of mediawiki.org permissible version range
 	 */
-	private $mwVersionRange;
+	public $mwVersionRange;
 
 	/**
 	 * @param string $extdir MediaWiki extension directory

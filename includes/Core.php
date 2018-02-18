@@ -161,6 +161,9 @@ class MWExtUpgrader {
 		$this->mwHunter = new MediaWikiHunter( $this->runtimeInfo['extdir'] );
 		$this->runtimeInfo['mwVersion'] = $this->mwHunter->getMWVersion();
 
+		// Push MediaWikiHunter::$mwVersionRange to global scope
+		$GLOBALS['mwVersionRange'] = $this->mwHunter->mwVersionRange;
+
 		// Verify the MediaWiki version number
 		if ( $this->runtimeInfo['mwVersion'] ) {
 			echo "mwExtUpgrader detected an installed MediaWiki version is "

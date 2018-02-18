@@ -161,8 +161,9 @@ class Interactive {
 				}
 				$pattern = '/^(1\.[0-9][0-9](\.[0-9])?)$/';
 				$result = preg_match( $pattern, $input , $matches );
-				$minVersion = 1.27;
-				$maxVerison = 1.31;
+				global $mwVersionRange;
+				$minVersion = $mwVersionRange['minVersion'];
+				$maxVerison = $mwVersionRange['betaVersion'];
 				if ( $result === 0 || $input < $minVersion || $input > $maxVerison ) {
 					self::shellOutput( self::$msg['warning']['invalid-mwversion'] );
 					echo self::$msg['type-mwversion'];
