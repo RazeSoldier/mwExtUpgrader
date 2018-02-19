@@ -109,6 +109,9 @@ class Interactive {
 	 * @return bool
 	 */
 	private function checkDir($dir) {
+		if ( empty( $dir ) ) {
+			return false;
+		}
 		$dir = realpath($dir);
 		if ( !file_exists( $dir ) ) {
 			self::shellOutput( self::$msg['warning']['dir-not-exist'] );
