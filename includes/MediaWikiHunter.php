@@ -51,21 +51,15 @@ class MediaWikiHunter {
 	 * @param string $mwVersion
 	 * @return string A branch name of like REL1_30
 	 */
-	private function convertMWVersion($mwVersion) {
-		$mw1_27 = 1.27;
-		$mw1_29 = 1.29;
-		$mw1_30 = 1.30;
-		$mw1_31 = 1.31;
-		if ( $mwVersion >= $mw1_27 && $mwVersion < $mw1_29 ) {
-			return 'REL1_27';
+	private function convertMWVersionToString($mwVersion) {
+		$pattern = '/^[0-9]\.[0-9][0-9]/';
+		$matches = array();
+		preg_match( $pattern, $mwVersion, $matches );
+		if ( $matches[0] > $GLOBALS['mwVersionRange']['betaVersion'] ) {
+			return 'master';
 		}
-		if ( $mwVersion >= $mw1_29 && $mwVersion < $mw1_30 ) {
-			return 'REL1_29';
-		}
-		if ( $mwVersion >= $mw1_30 && $mwVersion < $mw1_31 ) {
-			return 'REL1_30';
-		}
-		return 'master';
+		$replace = str_replace( '.', '_', $matches[0] );
+		return 'REL' . $replace;
 	}
 
 	/**
@@ -145,7 +139,7 @@ class MediaWikiHunter {
 	 * @return string
 	 */
 	public function getExtDownloadURL($extName, $mwVersion) {
-		$branchName = $this->convertMWVersion( $mwVersion );
+		$branchName = $this->convertMWVersionToString( $mwVersion );
 		$downloader = new Download( $this->mwWikiApi . "&edbexts={$extName}", 'text' );
 		$jsonArray = json_decode( $downloader->doDownload(), true );
 		unset( $downloader );
