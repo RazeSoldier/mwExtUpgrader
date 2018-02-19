@@ -67,6 +67,18 @@ class Interactive {
 	];
 
 	/**
+	 * @var object MediaWikiHunter object
+	 */
+	private $mwHunter;
+
+	/**
+	 * @param object $mwHunter MediaWikiHunter object
+	 */
+	public function setMWHunter($mwHunter) {
+		$this->mwHunter = $mwHunter;
+	}
+
+	/**
 	 * Render the font color of the output
 	 *
 	 * downloadFile::shellOutput callback function
@@ -161,9 +173,10 @@ class Interactive {
 				}
 				$pattern = '/^(1\.[0-9][0-9](\.[0-9])?)$/';
 				$result = preg_match( $pattern, $input , $matches );
-				$minVersion = 1.27;
-				$maxVerison = 1.31;
-				if ( $result === 0 || $input < $minVersion || $input > $maxVerison ) {
+				global $mwVersionRange;
+				$minVersion = $mwVersionRange['minVersion'];
+				$maxVerison = $mwVersionRange['betaVersion'];
+				if ( $result === 0 || !$this->mwHunter->checkMWVersion( $input ) ) {
 					self::shellOutput( self::$msg['warning']['invalid-mwversion'] );
 					echo self::$msg['type-mwversion'];
 					$this->userInput( 'text', 'checkversion', $parameter );

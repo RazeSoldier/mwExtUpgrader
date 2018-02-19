@@ -34,10 +34,16 @@ class MediaWikiHunter {
 	private $mwWikiApi = 'https://www.mediawiki.org/w/api.php?action=query&list=extdistbranches&format=json';
 
 	/**
+	 * @var array The API of mediawiki.org permissible version range
+	 */
+	public $mwVersionRange;
+
+	/**
 	 * @param string $extdir MediaWiki extension directory
 	 */
 	public function __construct($extdir) {
 		$this->mwIP = dirname($extdir);
+		$this->mwVersionRange = $this->getMWVersionRange();
 	}
 
 	/**
@@ -45,21 +51,60 @@ class MediaWikiHunter {
 	 * @param string $mwVersion
 	 * @return string A branch name of like REL1_30
 	 */
-	private function convertMWVersion($mwVersion) {
-		$mw1_27 = 1.27;
-		$mw1_29 = 1.29;
-		$mw1_30 = 1.30;
-		$mw1_31 = 1.31;
-		if ( $mwVersion >= $mw1_27 && $mwVersion < $mw1_29 ) {
-			return 'REL1_27';
+	private function convertMWVersionToString($mwVersion) {
+		$pattern1 = "/^{$this->mwVersionRange['betaVersion']}(.)*-alpha$/";
+		$firstMatch = preg_match( $pattern1, $mwVersion );
+		if ( $firstMatch === 1 ) {
+			return 'master';
 		}
-		if ( $mwVersion >= $mw1_29 && $mwVersion < $mw1_30 ) {
-			return 'REL1_29';
+
+		$pattern2 = '/^[0-9]\.[0-9][0-9]/';
+		$matches = array();
+		preg_match( $pattern2, $mwVersion, $matches );
+		$replace = str_replace( '.', '_', $matches[0] );
+		return 'REL' . $replace;
+	}
+
+	/**
+	 * Convert a branch name of like REL1_30 into version number
+	 * @param string $mwVersion
+	 * @return string
+	 */
+	private function convertMWVersionToInt($mwVersion) {
+		$replace = str_replace( 'REL', null, $mwVersion );
+		return str_replace( '_', '.', $replace );
+	}
+
+	/**
+	 * Get MediaWiki current version range from the API
+	 * @return array
+	 */
+	private function getMWVersionRange() {
+		$downloader = new Download( $this->mwWikiApi . '&edbexts=ExtensionDistributor', 'text' );
+		$downloadResult = $downloader->doDownload();
+		if ( !$downloadResult ) {
+			trigger_error( 'The script can\'t get MediaWiki current version range from the API'
+					, E_USER_ERROR );
 		}
-		if ( $mwVersion >= $mw1_30 && $mwVersion < $mw1_31 ) {
-			return 'REL1_30';
+		$jsonArray = json_decode( $downloader->doDownload(), true );
+		unset( $downloader );
+
+		$arr = array();
+		foreach ( $jsonArray['query']['extdistbranches']['extensions']['ExtensionDistributor'] as $key => $value) {
+			$prefix = 'REL';
+			if ( strpos( $key, $prefix ) !== false ) {
+				$arr[] = $this->convertMWVersionToInt( $key );
+			}
 		}
-		return 'master';
+
+		sort( $arr );
+		$arrlength = count( $arr );
+		return [
+			'minVersion' => $arr[0],
+			'maxVersion' => $arr[$arrlength-1],
+			'betaVersion' => $arr[$arrlength-1] + 0.01,
+			'all' => $arr
+		];
 	}
 
 	/**
@@ -83,6 +128,32 @@ class MediaWikiHunter {
 	}
 
 	/**
+	 * Check if the mediawiki version number entered by the user
+	 * is within mediaWiki current version range
+	 * @param string $mwVersion
+	 * @return bool
+	 */
+	public function checkMWVersion($mwVersion) {
+		// First check if is a test version
+		$pattern1 = "/^{$this->mwVersionRange['betaVersion']}(.)*-alpha$/";
+		$firstMatch = preg_match( $pattern1, $mwVersion );
+		if ( $firstMatch === 1 ) {
+			return true;
+		}
+
+		// Check if is a stable version
+		foreach ( $this->mwVersionRange['all'] as $value) {
+			$pattern2 = "/^{$value}/";
+			$mainMatch = preg_match( $pattern2, $mwVersion );
+			if ( $mainMatch === 1 ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Get absolute path of the extension
 	 * @param string $extName
 	 * @return string Absolute path of the extension
@@ -98,7 +169,7 @@ class MediaWikiHunter {
 	 * @return string
 	 */
 	public function getExtDownloadURL($extName, $mwVersion) {
-		$branchName = $this->convertMWVersion( $mwVersion );
+		$branchName = $this->convertMWVersionToString( $mwVersion );
 		$downloader = new Download( $this->mwWikiApi . "&edbexts={$extName}", 'text' );
 		$jsonArray = json_decode( $downloader->doDownload(), true );
 		unset( $downloader );

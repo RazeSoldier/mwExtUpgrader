@@ -157,11 +157,23 @@ class MWExtUpgrader {
 		echo Interactive::$msg['type-dir'];
 		$this->runtimeInfo['extdir'] = $this->client->userInput( 'text', 'checkdir' );
 
+		// Checks if the temp directory can be read-write
+		$GLOBALS['tempdir'] = sys_get_temp_dir();
+		if ( !createFileAble( $GLOBALS['tempdir'] ) ) {
+			Interactive::shellOutput( Interactive::$msg['warning']['systempdir-not-rw'] );
+			echo Interactive::$msg['type-temp-dir'];
+			$GLOBALS['tempdir'] = $this->client->userInput( 'checktempdir' );
+		}
+
 		// Get the MediaWiki version number
 		$this->mwHunter = new MediaWikiHunter( $this->runtimeInfo['extdir'] );
 		$this->runtimeInfo['mwVersion'] = $this->mwHunter->getMWVersion();
 
+		// Push MediaWikiHunter::$mwVersionRange to global scope
+		$GLOBALS['mwVersionRange'] = $this->mwHunter->mwVersionRange;
+
 		// Verify the MediaWiki version number
+		$this->client->setMWHunter( $this->mwHunter );
 		if ( $this->runtimeInfo['mwVersion'] ) {
 			echo "mwExtUpgrader detected an installed MediaWiki version is "
 				. "{$this->runtimeInfo['mwVersion']}\n";
@@ -173,14 +185,6 @@ class MWExtUpgrader {
 		}
 		$this->runtimeInfo['mwVersion'] = $this->client->userInput( 'text',
 				'checkversion', $this->runtimeInfo['mwVersion'] );
-
-		// Checks if the temp directory can be read-write
-		$GLOBALS['tempdir'] = sys_get_temp_dir();
-		if ( !createFileAble( $GLOBALS['tempdir'] ) ) {
-			Interactive::shellOutput( Interactive::$msg['warning']['systempdir-not-rw'] );
-			echo Interactive::$msg['type-temp-dir'];
-			$GLOBALS['tempdir'] = $this->client->userInput( 'checktempdir' );
-		}
 	}
 
 	/**
