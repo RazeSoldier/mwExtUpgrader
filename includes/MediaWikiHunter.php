@@ -52,12 +52,15 @@ class MediaWikiHunter {
 	 * @return string A branch name of like REL1_30
 	 */
 	private function convertMWVersionToString($mwVersion) {
-		$pattern = '/^[0-9]\.[0-9][0-9]/';
-		$matches = array();
-		preg_match( $pattern, $mwVersion, $matches );
-		if ( $matches[0] > $GLOBALS['mwVersionRange']['betaVersion'] ) {
+		$pattern1 = "/^{$this->mwVersionRange['betaVersion']}(.)*-alpha$/";
+		$firstMatch = preg_match( $pattern1, $mwVersion );
+		if ( $firstMatch === 1 ) {
 			return 'master';
 		}
+
+		$pattern2 = '/^[0-9]\.[0-9][0-9]/';
+		$matches = array();
+		preg_match( $pattern2, $mwVersion, $matches );
 		$replace = str_replace( '.', '_', $matches[0] );
 		return 'REL' . $replace;
 	}
@@ -99,7 +102,8 @@ class MediaWikiHunter {
 		return [
 			'minVersion' => $arr[0],
 			'maxVersion' => $arr[$arrlength-1],
-			'betaVersion' => $arr[$arrlength-1] + 0.01
+			'betaVersion' => $arr[$arrlength-1] + 0.01,
+			'all' => $arr
 		];
 	}
 
@@ -121,6 +125,32 @@ class MediaWikiHunter {
 		preg_match( $pattern[2], $matches[0], $result );
 
 		return $result[0];
+	}
+
+	/**
+	 * Check if the mediawiki version number entered by the user
+	 * is within mediaWiki current version range
+	 * @param string $mwVersion
+	 * @return bool
+	 */
+	public function checkMWVersion($mwVersion) {
+		// First check if is a test version
+		$pattern1 = "/^{$this->mwVersionRange['betaVersion']}(.)*-alpha$/";
+		$firstMatch = preg_match( $pattern1, $mwVersion );
+		if ( $firstMatch === 1 ) {
+			return true;
+		}
+
+		// Check if is a stable version
+		foreach ( $this->mwVersionRange['all'] as $value) {
+			$pattern2 = "/^{$value}/";
+			$mainMatch = preg_match( $pattern2, $mwVersion );
+			if ( $mainMatch === 1 ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**

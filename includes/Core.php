@@ -173,6 +173,7 @@ class MWExtUpgrader {
 		$GLOBALS['mwVersionRange'] = $this->mwHunter->mwVersionRange;
 
 		// Verify the MediaWiki version number
+		$this->client->setMWHunter( $this->mwHunter );
 		if ( $this->runtimeInfo['mwVersion'] ) {
 			echo "mwExtUpgrader detected an installed MediaWiki version is "
 				. "{$this->runtimeInfo['mwVersion']}\n";
