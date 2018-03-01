@@ -1,2 +1,8 @@
 # NetBeans IDE
 /nbproject/*
+
+# Composer
+/vendor
+/composer.lock
+/composer.local.json
+/composer.phar
