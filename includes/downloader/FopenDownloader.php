@@ -65,6 +65,10 @@ class FopenDownloader {
 	}
 
 	public function doDownload() {
+		if ( !$this->remoteStream ) {
+			trigger_error( "Download failed: Can't get something from {$this->url}", E_USER_WARNING );
+			return;
+		}
 		if ( $this->mode === 'text' ) {
 			$returnValue = stream_get_contents( $this->remoteStream );
 		} elseif ( $this->mode === 'file' ) {

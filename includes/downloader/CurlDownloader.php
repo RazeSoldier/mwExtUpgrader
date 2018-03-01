@@ -88,8 +88,9 @@ class CurlDownloader {
 	public function doDownload() {
 		$this->setCurlOpt();
 		$this->result = curl_exec( $this->curlResource );
-		if ( !$this->result ) {
+		if ( $this->result === false ) {
 			trigger_error( "Download failed: Can't get something from {$this->url}", E_USER_WARNING );
+			return;
 		}
 		if ( $this->mode === 'text' ) {
 			$returnValue = $this->result;
