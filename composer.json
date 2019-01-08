@@ -1,16 +1,16 @@
 {
-	"name": "RazeSoldier/mwExtUpgrader",
+	"name": "razesoldier/mw-ext-upgrader",
 	"description": "Batch upgrade MediaWiki extensions tool.",
 	"keywords": ["mediawiki"],
 	"authors": [
 	{
 		"name": "Raze Soldier",
 		"email": "razesoldier@outlook.com",
-		"homepage": "https://razesoldier.cn",
+		"homepage": "https://www.razesoldier.cn",
 		"role": "developer"
 	}
 	],
-	"license": "GPL-3.0",
+	"license": "GPL-3.0-or-later",
 	"homepage": "https://github.com/RazeSoldier/mwExtUpgrader",
 	"support": {
 		"issues": "https://github.com/RazeSoldier/mwExtUpgrader/issues"
