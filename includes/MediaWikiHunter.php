@@ -29,7 +29,7 @@ class MediaWikiHunter {
 	private $mwIP;
 
 	/**
-	 * @var stirng MediaWiki wiki api
+	 * @var string MediaWiki wiki api
 	 */
 	private $mwWikiApi = 'https://www.mediawiki.org/w/api.php?action=query&list=extdistbranches&format=json';
 
