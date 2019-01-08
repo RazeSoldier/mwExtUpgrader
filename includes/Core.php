@@ -45,8 +45,10 @@ class MWExtUpgrader {
 		require_once APP_PATH . '/includes/Interactive.php';
 		require_once APP_PATH . '/includes/MediaWikiHunter.php';
 		require_once APP_PATH . '/includes/Download.php';
-		require_once APP_PATH . '/includes/downloader/CurlDownloader.php';
-		require_once APP_PATH . '/includes/downloader/FopenDownloader.php';
+		require_once APP_PATH . '/includes/Downloader/IDownloader.php';
+		require_once APP_PATH . '/includes/Downloader/DownloaderFactory.php';
+		require_once APP_PATH . '/includes/Downloader/CurlDownloader.php';
+		require_once APP_PATH . '/includes/Downloader/FopenDownloader.php';
 		require_once APP_PATH . '/includes/ExtractTarball.php';
 		require_once APP_PATH . '/includes/FilePermission.php';
 	}

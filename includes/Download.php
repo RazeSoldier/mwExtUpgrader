@@ -22,6 +22,8 @@
 
 namespace RazeSoldier\MWExtUpgrader;
 
+use RazeSoldier\MWExtUpgrader\Downloader\DownloaderFactory;
+
 class Download {
 	/**
 	 * @var string Remote link
@@ -41,27 +43,12 @@ class Download {
 	private $tempDir;
 
 	/**
-	 * @var object
+	 * @var \RazeSoldier\MWExtUpgrader\Downloader\IDownloader
 	 */
 	private $downloader;
 
-	/**
-	 * @var array messages
-	 */
-	private $msg = [
-		'error' => [
-			'without-downloader' => 'No downloader available for script.'
-		]
-	];
-
 	private function getDownloader() {
-		if ( extension_loaded( 'curl' ) ) {
-			return new Downloader\CurlDownloader( $this->url, $this->mode, $this->tempDir );
-		} elseif ( ini_get( 'allow_url_fopen' ) == 1 ) {
-			return new Downloader\FopenDownloader( $this->url, $this->mode, $this->tempDir );
-		} else {
-			trigger_error( $this->msg['error']['without-downloader'], E_USER_ERROR );
-		}
+		return DownloaderFactory::make($this->url, $this->mode, $this->tempDir);
 	}
 
 	public function __construct($url, $mode = 'file') {

@@ -22,7 +22,7 @@
 
 namespace RazeSoldier\MWExtUpgrader\Downloader;
 
-class CurlDownloader {
+class CurlDownloader implements IDownloader {
 	/**
 	 * @var string
 	 */

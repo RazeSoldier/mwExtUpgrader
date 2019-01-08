@@ -22,7 +22,7 @@
 
 namespace RazeSoldier\MWExtUpgrader\Downloader;
 
-class FopenDownloader {
+class FopenDownloader implements IDownloader {
 	/**
 	 * @var string
 	 */
