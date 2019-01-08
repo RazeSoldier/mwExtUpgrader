@@ -20,7 +20,7 @@
  * @file
  */
 
-namespace MWExtUpgrader;
+namespace RazeSoldier\MWExtUpgrader;
 
 class ExtractTarball {
 	/**

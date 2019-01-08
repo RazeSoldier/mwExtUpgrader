@@ -20,7 +20,7 @@
  * @file
  */
 
-namespace MWExtUpgrader;
+namespace RazeSoldier\MWExtUpgrader;
 
 # Windows system permission system and linux have a bit different
 if ( PHP_OS === 'WINNT' || PHP_OS === 'Windows' || PHP_OS === 'WIN32') {

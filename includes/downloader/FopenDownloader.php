@@ -20,7 +20,7 @@
  * @file
  */
 
-namespace MWExtUpgrader\Downloader;
+namespace RazeSoldier\MWExtUpgrader\Downloader;
 
 class FopenDownloader {
 	/**
