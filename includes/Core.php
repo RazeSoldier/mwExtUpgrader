@@ -22,7 +22,7 @@
 
 namespace RazeSoldier\MWExtUpgrader;
 
-class MWExtUpgrader {
+class Core {
 	/**
 	 * @var array
 	 */

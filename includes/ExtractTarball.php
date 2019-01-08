@@ -66,7 +66,7 @@ class ExtractTarball {
 
 	public function __destruct() {
 		if ( file_exists( $this->targetPath ) ) {
-			MWExtUpgrader::delDir( $this->targetPath );
+			Core::delDir( $this->targetPath );
 		}
 	}
 }

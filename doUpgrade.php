@@ -24,6 +24,6 @@
 define( 'APP_PATH', __DIR__ );
 require_once APP_PATH . '/includes/Core.php';
 
-RazeSoldier\MWExtUpgrader\MWExtUpgrader::classLoader();
-$mwExtUpgrader = new RazeSoldier\MWExtUpgrader\MWExtUpgrader();
+RazeSoldier\MWExtUpgrader\Core::classLoader();
+$mwExtUpgrader = new RazeSoldier\MWExtUpgrader\Core();
 $mwExtUpgrader->run();
