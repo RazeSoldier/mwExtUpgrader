@@ -1,6 +1,9 @@
 # NetBeans IDE
 /nbproject/*
 
+# Phpstorm
+/.idea/*
+
 # Composer
 /vendor
 /composer.lock
