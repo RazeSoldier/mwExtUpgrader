@@ -16,7 +16,7 @@
 		"issues": "https://github.com/RazeSoldier/mwExtUpgrader/issues"
 	},
 	"require": {
-		"php": ">=5.4.0",
+		"php": ">=7.0.0",
 		"ext-phar": "*"
 	},
 	"require-dev": {
