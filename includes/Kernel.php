@@ -31,6 +31,10 @@ final class Kernel {
 	private $app;
 
 	public function __construct() {
+		// Make sure all errors will be throw exception
+		set_error_handler(function (int $errNo, string $errStr, string $errFile, int $errLine) {
+			throw new \ErrorException($errStr, 0, $errNo, $errFile, $errLine);
+		});
 		$this->app = new Application();
 		$this->registerCommand();
 	}
