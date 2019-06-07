@@ -1,7 +1,5 @@
 <?php
 /**
- * Bootstrap file
- *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -20,10 +18,8 @@
  * @file
  */
 
-// Define the absolute path to the root directory of this project
-define( 'APP_PATH', __DIR__ );
-require_once APP_PATH . '/includes/Core.php';
+require_once __DIR__ . '/includes/FilePermission.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
-MWExtUpgrader\MWExtUpgrader::classLoader();
-$mwExtUpgrader = new MWExtUpgrader\MWExtUpgrader();
-$mwExtUpgrader->run();
+$app = new \RazeSoldier\MWExtUpgrader\Kernel;
+$app->run();

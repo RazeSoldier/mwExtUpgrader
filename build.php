@@ -21,10 +21,10 @@
  */
 
 $pharName = 'mwExtUpgrader.phar';
-$bootstrapFilename = 'doUpgrade.php';
+$bootstrapFilename = 'run.php';
 try {
     $phar = new Phar( $pharName );
-    $includeRegex = '/\.php$/'; // Inculde all .php file
+    $includeRegex = '/\.php$/'; // Includes all .php file
     $phar->buildFromDirectory( __DIR__, $includeRegex );
     $phar->delete( basename( __FILE__ ) ); // Ignore this build script
     // Set phar file head
@@ -37,8 +37,6 @@ try {
         'Project repository' => 'https://github.com/RazeSoldier/mwExtUpgrader'
     ];
     $phar->setMetadata( $metadata );
-} catch ( PharException $e ) {
-    echo 'Write operations failed on brandnewphar.phar: ', $e;
 } catch ( UnexpectedValueException $e ) {
     if ( ini_get( 'phar.readonly' ) == 1 ) {
         $errorMsg = "phar.readonly is set to 1, build script does not work. (Please set phar.readonly to 0 in php.ini)\n";
