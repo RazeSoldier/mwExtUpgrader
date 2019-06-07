@@ -21,7 +21,7 @@
  */
 
 $pharName = 'mwExtUpgrader.phar';
-$bootstrapFilename = 'doUpgrade.php';
+$bootstrapFilename = 'run.php';
 try {
     $phar = new Phar( $pharName );
     $includeRegex = '/\.php$/'; // Inculde all .php file

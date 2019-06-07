@@ -18,14 +18,8 @@
  * @file
  */
 
-namespace RazeSoldier\MWExtUpgrader\Downloader;
+require_once __DIR__ . '/includes/FilePermission.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
-/**
- * All downloader must implements this interface
- * @package RazeSoldier\MWExtUpgrader\Downloader
- */
-interface IDownloader {
-	public function __construct($url, $mode, $tempDir);
-
-	public function doDownload();
-}
+$app = new \RazeSoldier\MWExtUpgrader\Kernel;
+$app->run();

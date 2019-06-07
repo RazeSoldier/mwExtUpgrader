@@ -18,17 +18,32 @@
  * @file
  */
 
-namespace RazeSoldier\MWExtUpgrader\Downloader;
+namespace RazeSoldier\MWExtUpgrader;
 
-class DownloaderFactory
-{
-	public static function make($url, $mode, $tempDir) {
-		if ( extension_loaded( 'curl' ) ) {
-			return new CurlDownloader( $url, $mode, $tempDir );
-		} elseif ( ini_get( 'allow_url_fopen' ) == 1 ) {
-			return new FopenDownloader( $url, $mode, $tempDir );
-		} else {
-			trigger_error( 'No Downloader available for script.', E_USER_ERROR );
-		}
+use RazeSoldier\MWExtUpgrader\Command\DefaultCommand;
+use Symfony\Component\Console\Application;
+
+/**
+ * Program Kernel
+ * @package RazeSoldier\MWExtUpgrader
+ */
+final class Kernel {
+	private $app;
+
+	public function __construct() {
+		$this->app = new Application();
+		$this->registerCommand();
+	}
+
+	private function registerCommand() {
+		$defaultCmd = new DefaultCommand;
+		$this->app->setCatchExceptions(true);
+		$this->app->add($defaultCmd);
+		$this->app->setDefaultCommand($defaultCmd->getName());
+	}
+
+	public function run() {
+		$status = $this->app->run();
+		exit($status);
 	}
 }

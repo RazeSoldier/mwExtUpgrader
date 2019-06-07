@@ -1,7 +1,5 @@
 <?php
 /**
- * Bootstrap file
- *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -20,10 +18,38 @@
  * @file
  */
 
-// Define the absolute path to the root directory of this project
-define( 'APP_PATH', __DIR__ );
-require_once APP_PATH . '/includes/Core.php';
+namespace RazeSoldier\MWExtUpgrader;
 
-RazeSoldier\MWExtUpgrader\Core::classLoader();
-$mwExtUpgrader = new RazeSoldier\MWExtUpgrader\Core();
-$mwExtUpgrader->run();
+/**
+ * Services
+ * @package RazeSoldier\MWExtUpgrader
+ */
+class Services
+{
+	private static $instance;
+
+	private $services = [];
+
+	private function __construct(){}
+
+	public static function getInstance() : self {
+		if (self::$instance == null) {
+			self::$instance = new self;
+		}
+		return self::$instance;
+	}
+
+	public function getHttpClient() : HttpClient {
+		if (!isset($this->services['http_client'])) {
+			$this->services['http_client'] = HttpClient::getInstance();
+		}
+		return $this->services['http_client'];
+	}
+
+	public function getExtensionRepo() : ExtensionRepo {
+		if (!isset($this->services['extension_repo'])) {
+			$this->services['extension_repo'] = new ExtensionRepo;
+		}
+		return $this->services['extension_repo'];
+	}
+}

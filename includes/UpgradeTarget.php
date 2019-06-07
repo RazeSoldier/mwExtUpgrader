@@ -1,7 +1,5 @@
 <?php
 /**
- * Download action
- *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -22,43 +20,49 @@
 
 namespace RazeSoldier\MWExtUpgrader;
 
-use RazeSoldier\MWExtUpgrader\Downloader\DownloaderFactory;
+class UpgradeTarget {
+	public const TYPE_EXT = 1;
+	public const TYPE_SKIN = 2;
 
-class Download {
-	/**
-	 * @var string Remote link
-	 */
-	private $url;
+	private $type;
 
-	/**
-	 * @var string Download mode Acceptable values:
-	 *  - 'text' doDownload() will return string
-	 *  - 'file' (default value)
-	 */
-	private $mode;
+	private $dst;
 
-	/**
-	 * @var string
-	 */
-	private $tempDir;
+	private $src;
 
-	/**
-	 * @var \RazeSoldier\MWExtUpgrader\Downloader\IDownloader
-	 */
-	private $downloader;
+	private $name;
 
-	private function getDownloader() {
-		return DownloaderFactory::make($this->url, $this->mode, $this->tempDir);
+	public function __construct(int $type, string $dst) {
+		$this->type = $type;
+		$this->dst = $dst;
+		$this->name = basename($this->dst);
 	}
 
-	public function __construct($url, $mode = 'file') {
-		$this->url = $url;
-		$this->mode = $mode;
-		$this->tempDir = $GLOBALS['tempdir'];
-		$this->downloader = $this->getDownloader();
+	public static function newExtTarget(string $dst) : self {
+		return new self(self::TYPE_EXT, $dst);
 	}
 
-	public function doDownload() {
-		return $this->downloader->doDownload();
+	public static function newSkinTarget(string $dst) : self {
+		return new self(self::TYPE_SKIN, $dst);
+	}
+
+	public function getName() : string {
+		return $this->name;
+	}
+
+	public function setSrc(string $url) {
+		$this->src = $url;
+	}
+
+	public function getSrc() : string {
+		return $this->src;
+	}
+
+	public function getDst() : string {
+		return $this->dst;
+	}
+
+	public function getType() : int {
+		return $this->type;
 	}
 }
