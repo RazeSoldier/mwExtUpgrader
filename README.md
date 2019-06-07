@@ -12,7 +12,7 @@ Many people are updated one by one via [ExtensionDistributor](https://www.mediaw
 ## How to use
 This is an interactive script.
 
-Just run `php doUpgrade.php`.
+Just run `php run.php`.
 
 ### What is build.php?
 `build.php` used to build a [PHAR archive](https://en.wikipedia.org/wiki/PHAR_\(file_format\)) of this project. Equivalent package the entire project.
