@@ -11,11 +11,20 @@ Many people are updated one by one via [ExtensionDistributor](https://www.mediaw
 
 ## How to use
 This is an interactive script.
+### If you have downloaded the release version
 
-Just run `php run.php`.
+Just run
+`php mwExtUpgrader.phar`
 
-### What is build.php?
-`build.php` used to build a [PHAR archive](https://en.wikipedia.org/wiki/PHAR_\(file_format\)) of this project. Equivalent package the entire project.
+### If you have downloaded the source code
+
+You will need to have a working install of [composer](https://getcomposer.org/) to fulfill the dependencies
+
+`composer install
+php run.php`
+
+## Prepare a release
+You need to use the `build.php` script to build the [PHAR archive](https://en.wikipedia.org/wiki/PHAR_\(file_format\)) of this project. It package the entire project along with it's dependencies.
 
 The script generated file can be executed, equivalent execute ordinary a PHP file.
 
