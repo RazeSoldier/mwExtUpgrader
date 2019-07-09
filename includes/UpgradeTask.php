@@ -62,6 +62,8 @@ class UpgradeTask {
 	 */
 	private function makeTmp() : string {
 		$filename = tempnam(sys_get_temp_dir(), 'mwe');
+		rename($filename, "$filename.tar.gz");
+		$filename .= '.tar.gz';
 		register_shutdown_function(function () use ($filename) {
 			if (file_exists($filename)) {
 				unlink($filename);
