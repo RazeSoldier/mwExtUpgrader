@@ -20,8 +20,8 @@ Just run
 
 You will need to have a working install of [composer](https://getcomposer.org/) to fulfill the dependencies
 
-`composer install
-php run.php`
+`composer install`  
+`php run.php`
 
 ## Prepare a release
 You need to use the `build.php` script to build the [PHAR archive](https://en.wikipedia.org/wiki/PHAR_\(file_format\)) of this project. It package the entire project along with it's dependencies.
