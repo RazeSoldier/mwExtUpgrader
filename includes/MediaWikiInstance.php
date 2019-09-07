@@ -83,11 +83,11 @@ class MediaWikiInstance {
 
 	/**
 	 * Checks $path is valid MediaWiki directory
-	 * @param string $path
+	 * @param string|null $path
 	 * @return void
 	 * @throws \UnexpectedValueException If the path is invalid, throw it
 	 */
-	public static function checkPath(string $path) {
+	public static function checkPath(string $path = null) {
 		if (!is_readable($path)) {
 			throw new \UnexpectedValueException("Failed to read $path, or the directory does not exist.");
 		}

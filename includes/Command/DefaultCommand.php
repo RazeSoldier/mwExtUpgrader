@@ -98,7 +98,7 @@ class DefaultCommand extends Command {
 	 */
 	private function askMWPath(QuestionHelper $asker, InputInterface $input, OutputInterface $output) : string {
 		$question = new Question('Please type the absolute path to the MediaWiki directory: ');
-		$question->setValidator(function (string $answer) {
+		$question->setValidator(function (string $answer = null) {
 			MediaWikiInstance::checkPath($answer);
 			return realpath($answer);
 		});
