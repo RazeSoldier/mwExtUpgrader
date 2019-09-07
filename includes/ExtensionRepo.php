@@ -32,6 +32,15 @@ class ExtensionRepo {
 			throw new \InvalidArgumentException('$extNames is an empty array.');
 		}
 
+		$links = [];
+		foreach (array_chunk($inputs, 49, true) as $items) {
+			$links = array_merge_recursive($links, $this->pullDownloadLink($items));
+		}
+
+		return $links;
+	}
+
+	private function pullDownloadLink(array $inputs) : array {
 		$exts = [];
 		$skins = [];
 		if (current($inputs) instanceof UpgradeTarget) {
