@@ -189,7 +189,6 @@ class DefaultCommand extends Command {
 
 		foreach ($tasks as $name => $task) {
 			$task->run($output);
-			$output->writeln("<info>$name upgrade successed</info>");
 		}
 	}
 }
