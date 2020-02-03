@@ -52,6 +52,13 @@ class UpgradeTask {
 		$res = $this->copyDir("{$filename}ex", dirname($this->dst));
 		if ($res) {
 			$this->deleteDst("{$filename}ex");
+			$version = $this->getVersion();
+			$text = "{$this->name} successfully upgraded";
+			// Try to output the extension version
+			if ($version !== null) {
+				$text .= " to $version";
+			}
+			$output->writeln("<info>$text</info>");
 		} else {
 			$output->writeln('<error>Failed to copy to dst from src</error>');
 		}
@@ -139,5 +146,21 @@ class UpgradeTask {
 		}
 		closedir($dir);
 		return true;
+	}
+
+	/**
+	 * Try to get extension version from composer.json
+	 * @return string|null Returns the version on success, return NULL on failure
+	 */
+	private function getVersion() :? string {
+		$text = file_get_contents(dirname($this->dst) . "/{$this->name}/extension.json");
+		if ($text === false) {
+			return null;
+		}
+		$json = json_decode($text, true);
+		if (isset($json['version'])) {
+			return $json['version'];
+		}
+		return null;
 	}
 }
