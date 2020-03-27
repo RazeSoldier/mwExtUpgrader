@@ -58,10 +58,18 @@ class MediaWikiInstance {
 		$text = file_get_contents("$this->baseDir/includes/DefaultSettings.php");
 		preg_match('/\$wgVersion\s=\s\'(?<version>.*?)\';/',
 			$text, $matches);
-		if (!isset($matches['version'])) {
-			throw new \RuntimeException('Failed to get MW version from DefaultSettings.php');
+		if (isset($matches['version'])) {
+			$this->version = new MWVersion($matches['version']);
+		} else {
+			// Try to search MW_VERSION constant in includes/Defines.php because $wgVersion deprecated in Mediawiki 1.35
+			$text = file_get_contents("$this->baseDir/includes/Defines.php");
+			preg_match('/define\(\s\'MW_VERSION\',\s\'(?<version>.*?)\'\s\);/',
+				$text, $matches);
+			if (!isset($matches['version'])) {
+				throw new \RuntimeException('Failed to get MW version from DefaultSettings.php and Defines.php');
+			}
+			$this->version = new MWVersion($matches['version']);
 		}
-		$this->version = new MWVersion($matches['version']);
 		return $this->version;
 	}
 
