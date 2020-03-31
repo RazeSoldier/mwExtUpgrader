@@ -47,6 +47,7 @@ class UpgradeTask {
 		$this->name = $name;
 		$this->src = $src;
 		$this->dst = $dst;
+		$this->type = $type;
 	}
 
 	public function run(OutputInterface $output) {
