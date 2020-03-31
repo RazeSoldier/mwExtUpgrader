@@ -22,9 +22,6 @@
 		"symfony/http-client": "^4.3",
 		"ext-json": "*"
 	},
-	"suggest": {
-		"ext-curl": "Required for HTTP external connector."
-	},
 	"autoload": {
 		"psr-4": {
 			"RazeSoldier\\MWExtUpgrader\\": "includes/"
