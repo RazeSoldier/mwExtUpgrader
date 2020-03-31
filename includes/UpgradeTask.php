@@ -38,7 +38,12 @@ class UpgradeTask {
 	 */
 	private $dst;
 
-	public function __construct(string $name, string $src, string $dst) {
+	/**
+	 * @var int Extension type, extension(1) or skin(2)
+	 */
+	private $type;
+
+	public function __construct(string $name, string $src, string $dst, int $type) {
 		$this->name = $name;
 		$this->src = $src;
 		$this->dst = $dst;
@@ -153,7 +158,8 @@ class UpgradeTask {
 	 * @return string|null Returns the version on success, return NULL on failure
 	 */
 	private function getVersion() :? string {
-		$text = file_get_contents(dirname($this->dst) . "/{$this->name}/extension.json");
+		$filename = $this->type === 1 ? 'extension.json' : 'skin.json';
+		$text = file_get_contents(dirname($this->dst) . "/{$this->name}/$filename");
 		if ($text === false) {
 			return null;
 		}
