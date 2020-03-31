@@ -184,7 +184,7 @@ class DefaultCommand extends Command {
 		/** @var UpgradeTask[] $tasks */
 		$tasks = [];
 		foreach ($targets as $target) {
-			$tasks[$target->getName()] = new UpgradeTask($target->getName(), $target->getSrc(), $target->getDst());
+			$tasks[$target->getName()] = new UpgradeTask($target->getName(), $target->getSrc(), $target->getDst(), $target->getType());
 		}
 
 		foreach ($tasks as $name => $task) {
