@@ -20,6 +20,7 @@
 		"ext-phar": "*",
 		"symfony/console": "^4.3",
 		"symfony/http-client": "^4.3",
+		"symfony/process": "^4.3",
 		"ext-json": "*"
 	},
 	"autoload": {

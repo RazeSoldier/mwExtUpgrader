@@ -53,21 +53,15 @@ class UpgradeTask {
 	public function run(OutputInterface $output) {
 		$filename = $this->makeTmp();
 		$this->pullFromSrc($filename, $output);
-		$this->extractTarball($filename, "{$filename}ex" );
 		$this->deleteDst($this->dst);
-		$res = $this->copyDir("{$filename}ex", dirname($this->dst));
-		if ($res) {
-			$this->deleteDst("{$filename}ex");
-			$version = $this->getVersion();
-			$text = "{$this->name} successfully upgraded";
-			// Try to output the extension version
-			if ($version !== null) {
-				$text .= " to $version";
-			}
-			$output->writeln("<info>$text</info>");
-		} else {
-			$output->writeln('<error>Failed to copy to dst from src</error>');
+		$this->extractTarball($filename, dirname($this->dst) );
+		$version = $this->getVersion();
+		$text = "{$this->name} successfully upgraded";
+		// Try to output the extension version
+		if ($version !== null) {
+			$text .= " to $version";
 		}
+		$output->writeln("<info>$text</info>");
 	}
 
 	/**
@@ -122,36 +116,7 @@ class UpgradeTask {
 	}
 
 	private function extractTarball(string $tarballPath, string $targetPath) {
-		$pharData = new \PharData($tarballPath);
-		$pharData->extractTo($targetPath);
-	}
-
-	private function copyDir(string $src, string $dst) {
-		$dir = opendir( $src );
-		if ( !is_resource( $dir ) ) {
-			return false;
-		}
-		if (!file_exists($dst)) {
-			mkdir( $dst );
-		}
-		while( false !== ( $file = readdir( $dir ) ) ) {
-			if ( ( $file != '.' ) && ( $file != '..' ) ) {
-				if ( is_dir( $src . '/' . $file ) ) {
-					$this->copyDir( $src . '/' . $file, $dst . '/' . $file );
-					continue;
-				} else {
-					$srcPath = $src . '/' . $file;
-					$dstPath = $dst . '/' . $file;
-					if ( is_readable( $srcPath ) && createFileAble( $dst ) ) {
-						copy( $srcPath, $dstPath );
-					} else {
-						return false;
-					}
-				}
-			}
-		}
-		closedir($dir);
-		return true;
+		Services::getInstance()->getExtractor()->extract($tarballPath, $targetPath);
 	}
 
 	/**

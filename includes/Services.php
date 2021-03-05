@@ -20,6 +20,9 @@
 
 namespace RazeSoldier\MWExtUpgrader;
 
+use RazeSoldier\MWExtUpgrader\Extractor\Extractor;
+use RazeSoldier\MWExtUpgrader\Extractor\ExtractorFactory;
+
 /**
  * Services
  * @package RazeSoldier\MWExtUpgrader
@@ -51,5 +54,12 @@ class Services
 			$this->services['extension_repo'] = new ExtensionRepo;
 		}
 		return $this->services['extension_repo'];
+	}
+
+	public function getExtractor(): Extractor {
+		if (!isset($this->services['extractor'])) {
+			$this->services['extractor'] = ExtractorFactory::make();
+		}
+		return $this->services['extractor'];
 	}
 }
