@@ -82,11 +82,11 @@ class MediaWikiInstance {
 	}
 
 	public function getExtDir() : string {
-		return "{$this->baseDir}/extensions";
+		return $this->baseDir . self::EXT_SUFFIX;
 	}
 
 	public function getSkinDir() : string {
-		return "{$this->baseDir}/skins";
+		return $this->baseDir . self::SKIN_SUFFIX;
 	}
 
 	/**
