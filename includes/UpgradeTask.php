@@ -50,6 +50,11 @@ class UpgradeTask {
 		$this->type = $type;
 	}
 
+	public static function fromPendingTarget(PendingUpgradeTarget $target): self {
+		$type = $target instanceof ExtensionPendingUpgradeTarget ? 1 : 2;
+		return new self($target->getName(), $target->getDownloadLink(), $target->getBasePath(), $type);
+	}
+
 	public function run(OutputInterface $output) {
 		$filename = $this->makeTmp();
 		$this->pullFromSrc($filename, $output);

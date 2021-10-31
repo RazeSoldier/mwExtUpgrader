@@ -20,49 +20,10 @@
 
 namespace RazeSoldier\MWExtUpgrader;
 
-class UpgradeTarget {
-	public const TYPE_EXT = 1;
-	public const TYPE_SKIN = 2;
-
-	private $type;
-
-	private $dst;
-
-	private $src;
-
-	private $name;
-
-	public function __construct(int $type, string $dst) {
-		$this->type = $type;
-		$this->dst = $dst;
-		$this->name = basename($this->dst);
-	}
-
-	public static function newExtTarget(string $dst) : self {
-		return new self(self::TYPE_EXT, $dst);
-	}
-
-	public static function newSkinTarget(string $dst) : self {
-		return new self(self::TYPE_SKIN, $dst);
-	}
-
-	public function getName() : string {
-		return $this->name;
-	}
-
-	public function setSrc(string $url) {
-		$this->src = $url;
-	}
-
-	public function getSrc() : string {
-		return $this->src;
-	}
-
-	public function getDst() : string {
-		return $this->dst;
-	}
-
-	public function getType() : int {
-		return $this->type;
-	}
+interface PendingUpgradeTarget
+{
+	public function getBasePath();
+	public function getName();
+	public function setDownloadLink(string $link);
+	public function getDownloadLink(): string;
 }

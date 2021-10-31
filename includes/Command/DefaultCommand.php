@@ -23,8 +23,9 @@ namespace RazeSoldier\MWExtUpgrader\Command;
 use RazeSoldier\MWExtUpgrader\{
 	MediaWikiInstance,
 	MWBranch,
+	PendingUpgradeTarget,
+	PendingUpgradeTargetFactory,
 	Services,
-	UpgradeTarget,
 	UpgradeTask
 };
 use Symfony\Component\Console\{
@@ -56,7 +57,7 @@ class DefaultCommand extends Command {
 		$mw->getVersion();
 		$output->writeln("<comment>mwExtUpgrader detected your MediaWiki version is {$mw->getVersion()}</comment>");
 
-		/** @var UpgradeTarget[] $targets */
+		/** @var PendingUpgradeTarget[] $targets */
 		$targets = $this->getUpgradeTarget($mw->getExtDir(), $mw->getSkinDir());
 		if ($targets === []) {
 			$output->writeln('Nothing needs to be upgraded');
@@ -65,7 +66,7 @@ class DefaultCommand extends Command {
 
 		$targetVersion = $this->askTargetVersion($asker, $input, $output, $mw->getVersion()->getMainPart());
 
-		$this->handleTarget($targets, $targetVersion, $output);
+		$this->queryApiAndFilterPendingTarget($targets, $targetVersion, $output);
 		if ($targets === []) {
 			$output->writeln('Nothing needs to be upgraded');
 			return 0;
@@ -121,7 +122,7 @@ class DefaultCommand extends Command {
 	}
 
 	private function getUpgradeTarget(string $extDir, string $skinDir) : array {
-		/** @var UpgradeTarget[] $targets */
+		/** @var PendingUpgradeTarget[] $targets */
 		$targets = [];
 
 		$dir = new \DirectoryIterator($extDir);
@@ -129,7 +130,7 @@ class DefaultCommand extends Command {
 			if ($iterator->isDot() || $iterator->isFile()) {
 				continue;
 			}
-			$targets[] = UpgradeTarget::newExtTarget($iterator->getRealPath());
+			$targets[] = PendingUpgradeTargetFactory::makeExtension($iterator->getRealPath());
 		}
 
 		$dir = new \DirectoryIterator($skinDir);
@@ -137,19 +138,19 @@ class DefaultCommand extends Command {
 			if ($iterator->isDot() || $iterator->isFile()) {
 				continue;
 			}
-			$targets[] = UpgradeTarget::newSkinTarget($iterator->getRealPath());
+			$targets[] = PendingUpgradeTargetFactory::makeSkin($iterator->getRealPath());
 		}
 
 		return $targets;
 	}
 
 	/**
-	 * @param UpgradeTarget[] $targets
+	 * @param PendingUpgradeTarget[] $targets
 	 * @param string $targetVersion
 	 * @param OutputInterface $output
 	 * @throws \UnexpectedValueException
 	 */
-	private function handleTarget(array &$targets, string $targetVersion, OutputInterface $output) {
+	private function queryApiAndFilterPendingTarget(array &$targets, string $targetVersion, OutputInterface $output) {
 		$branch = MWBranch::parseVersion($targetVersion)->getBranchText();
 
 		$extRepo = Services::getInstance()->getExtensionRepo();
@@ -165,7 +166,7 @@ class DefaultCommand extends Command {
 			$name = $target->getName();
 			if (isset($links[$name])) {
 				if (isset($links[$name][$branch])) {
-					$target->setSrc($links[$name][$branch]);
+					$target->setDownloadLink($links[$name][$branch]);
 					$targets[] = $target;
 				} else {
 					$output->writeln("<error>$name unsupported $branch</error>");
@@ -177,14 +178,14 @@ class DefaultCommand extends Command {
 	}
 
 	/**
-	 * @param UpgradeTarget[] $targets
+	 * @param PendingUpgradeTarget[] $targets
 	 * @param OutputInterface $output
 	 */
 	private function doUpgrade(array $targets, OutputInterface $output) {
 		/** @var UpgradeTask[] $tasks */
 		$tasks = [];
 		foreach ($targets as $target) {
-			$tasks[$target->getName()] = new UpgradeTask($target->getName(), $target->getSrc(), $target->getDst(), $target->getType());
+			$tasks[$target->getName()] = UpgradeTask::fromPendingTarget($target);
 		}
 
 		foreach ($tasks as $name => $task) {

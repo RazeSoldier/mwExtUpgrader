@@ -43,10 +43,10 @@ class ExtensionRepo {
 	private function pullDownloadLink(array $inputs) : array {
 		$exts = [];
 		$skins = [];
-		if (current($inputs) instanceof UpgradeTarget) {
-			/** @var UpgradeTarget[] $inputs */
+		if (current($inputs) instanceof PendingUpgradeTarget) {
+			/** @var PendingUpgradeTarget[] $inputs */
 			foreach ($inputs as $input) {
-				if ($input->getType() === UpgradeTarget::TYPE_EXT) {
+				if ($input instanceof ExtensionPendingUpgradeTarget) {
 					$exts[] = $input->getName();
 				} else {
 					$skins[] = $input->getName();
@@ -54,7 +54,9 @@ class ExtensionRepo {
 			}
 		} else {
 			foreach ($inputs as $name => $type) {
-				if ($type === UpgradeTarget::TYPE_EXT) {
+				// "1" means a extension
+				// @TODO: Use a common constant to define it in the feature
+				if ($type === 1) {
 					$exts[] = $name;
 				} else {
 					$skins[] = $name;
@@ -95,7 +97,9 @@ class ExtensionRepo {
 	 * @return array A indexed array, the version numbers sorted in ascending order
 	 */
 	public function getSupportVersionRange() : array {
-		$links = $this->getDownloadLink(['ExtensionDistributor' => UpgradeTarget::TYPE_EXT])['ExtensionDistributor'];
+		// "1" means a extension
+		// @TODO: Use a common constant to define it in the feature
+		$links = $this->getDownloadLink(['ExtensionDistributor' => 1])['ExtensionDistributor'];
 		$branchs = array_keys($links);
 		$branchRange =  array_diff($branchs, ['master', 'source']);
 		array_walk($branchRange, function (&$value, $key) {
