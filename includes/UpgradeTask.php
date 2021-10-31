@@ -125,10 +125,11 @@ class UpgradeTask {
 	 */
 	private function getVersion() :? string {
 		$filename = $this->type === 1 ? 'extension.json' : 'skin.json';
-		if ( !file_exists( $filename ) ) {
+		$filepath = dirname($this->dst) . "/{$this->name}/$filename";
+		if (!is_readable($filepath)) {
 			return null;
 		}
-		$text = file_get_contents(dirname($this->dst) . "/{$this->name}/$filename");
+		$text = file_get_contents($filepath);
 		if ($text === false) {
 			return null;
 		}
