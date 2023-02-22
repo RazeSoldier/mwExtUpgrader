@@ -48,6 +48,9 @@ class DownloadTask {
 		$this->httpClient = Services::getInstance()->getHttpClient();
 	}
 
+	/**
+	 * @throws TransportException
+	 */
 	public function download() {
 		$resp = $this->makeNormalRequest();
 		$expectedSize = $resp->getHeaders(false)['content-length'][0];
@@ -57,7 +60,8 @@ class DownloadTask {
 
 		$actualSize = filesize($this->savePath);
 		if ($actualSize != $expectedSize) {
-			throw new \RuntimeException("<error>Expected size: $expectedSize, but got: $actualSize.</error>");
+			fclose($file);
+			throw new TransportException("<error>Expected size: $expectedSize, but got: $actualSize.</error>");
 		}
 		fclose($file);
 	}

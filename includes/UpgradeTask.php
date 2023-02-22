@@ -23,6 +23,8 @@ namespace RazeSoldier\MWExtUpgrader;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class UpgradeTask {
+	private const MAX_REQUEST_LIMIT = 3;
+
 	/**
 	 * @var string Task name
 	 */
@@ -88,17 +90,18 @@ class UpgradeTask {
 	 * Download the tarball of the remote file to local
 	 * @param string $tmp
 	 * @param OutputInterface $output
-	 * @throws \RuntimeException
 	 */
 	private function pullFromSrc(string $tmp, OutputInterface $output) {
 		$task = new DownloadTask($this->src, $tmp);
-		retry:
-		try {
-			$task->download();
-		} catch (\RuntimeException $e) {
-			$output->writeln($e->getMessage());
-			goto retry;
+		for ($i = 1; $i < self::MAX_REQUEST_LIMIT; $i++) {
+			try {
+				$task->download();
+				return;
+			} catch (\Exception $e) {
+				$output->writeln($e->getMessage());
+			}
 		}
+		throw new DownloadException("Failed to download from {$this->src}");
 	}
 
 	/**
