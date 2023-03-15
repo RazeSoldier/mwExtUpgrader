@@ -53,7 +53,7 @@ class DownloadTask {
 	 */
 	public function download() {
 		$resp = $this->makeNormalRequest();
-		$expectedSize = $resp->getHeaders(false)['content-length'][0];
+		$expectedSize = $resp->getHeaders(true)['content-length'][0];
 		$file = fopen($this->savePath, 'w+b');
 
 		$this->doTransport($resp, $file);
