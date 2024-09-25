@@ -1,32 +1,47 @@
 # mwExtUpgrader
-**A tool for batch upgrade MediaWiki extensions**
+**A tool for batch upgrading MediaWiki extensions**
 
-## Project purpose
-Many people are updated one by one via [ExtensionDistributor](https://www.mediawiki.org/wiki/Special:ExtensionDistributor), without git.
+## Project Purpose
 
-**This script can help operator who do not intend to use git to manage version but feel a headache when upgrading their MediaWiki.**
+Many MediaWiki administrators update extensions one by one using the [ExtensionDistributor](https://www.mediawiki.org/wiki/Special:ExtensionDistributor), often without using Git. This can be time-consuming and cumbersome.
 
-## Feature
-* Batch upgrade the extension of your wiki that powered by MediaWiki (In fact, it is to batch replace old files as new files)
+**`mwExtUpgrader` is designed for operators who prefer not to use Git for managing extensions, but want a simpler, more efficient way to batch upgrade their MediaWiki extensions.**
 
-## How to use
-This is an interactive script.
-### If you have downloaded the release version
+## Features
+* Batch upgrades of MediaWiki extensions.
+* Replaces old extension files with new versions in one streamlined process.
 
-Just run
-`php mwExtUpgrader.phar`
+## How to Use
 
-### If you have downloaded the source code
+`mwExtUpgrader` is an interactive script.
 
-You will need to have a working install of [composer](https://getcomposer.org/) to fulfill the dependencies
+### Using the Release Version
 
-`composer install`  
-`php run.php`
+If you have downloaded the pre-built `.phar` release, simply run the following command:
 
-## Prepare a release
-You need to use the `build.php` script to build the [PHAR archive](https://en.wikipedia.org/wiki/PHAR_\(file_format\)) of this project. It package the entire project along with it's dependencies.
+```bash
+php mwExtUpgrader.phar
+```
 
-The script generated file can be executed, equivalent execute ordinary a PHP file.
+### Using the Source Code
+
+If you've downloaded the source code, you will need to have [Composer](https://getcomposer.org/) installed to manage the dependencies. Once you have Composer, run the following commands:
+
+```bash
+composer install
+php run.php
+```
+
+## Preparing a Release
+
+To create a new release, use the `build.php` script. This script packages the project and its dependencies into a [PHAR archive](https://en.wikipedia.org/wiki/PHAR_\(file_format\)), a single executable PHP file.
+
+Once the `.phar` file is built, it can be executed like any standard PHP file.
+
+```bash
+php build.php
+```
 
 ## Support
-If this script on the way in the use of the problem or you have any ideas, please go to the [Github issues](https://github.com/RazeSoldier/mwExtUpgrader/issues).
+
+If you encounter any issues while using the script or have suggestions for improvements, please submit them via [GitHub Issues](https://github.com/RazeSoldier/mwExtUpgrader/issues).
