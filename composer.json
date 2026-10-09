@@ -16,11 +16,11 @@
 		"issues": "https://github.com/RazeSoldier/mwExtUpgrader/issues"
 	},
 	"require": {
-		"php": ">=7.1.3",
+		"php": ">=7.2.5",
 		"ext-phar": "*",
-		"symfony/console": "^4.3",
-		"symfony/http-client": "^4.3",
-		"symfony/process": "^4.3",
+		"symfony/console": "^5.4",
+		"symfony/http-client": "^5.4",
+		"symfony/process": "^5.4",
 		"ext-json": "*"
 	},
 	"autoload": {

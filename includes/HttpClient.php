@@ -62,7 +62,7 @@ class HttpClient
 		return $this->client->request($method, $url, $option);
 	}
 
-	public function stream(ResponseInterface $response, float $timeout = null) : ResponseStreamInterface {
+	public function stream(ResponseInterface $response, ?float $timeout = null) : ResponseStreamInterface {
 		return $this->client->stream($response, $timeout);
 	}
 }
