@@ -34,6 +34,18 @@ class MediaWikiInstance {
 	private $baseDir;
 
 	/**
+	 * @var string DefaultSettings.php file path, removed in MediaWiki 1.46
+	 * @see https://www.mediawiki.org/wiki/Manual:DefaultSettings.php
+	 */
+	private $defaultSettingsFilePath;
+
+	/**
+	 * @var string Defines.php file path
+	 * @see https://www.mediawiki.org/wiki/Manual:Defines.php
+	 */
+	private $definesFilePath;
+
+	/**
 	 * @var MWVersion Version for the site
 	 */
 	private $version;
@@ -45,6 +57,8 @@ class MediaWikiInstance {
 
 	public function __construct(string $path) {
 		$this->baseDir = $path;
+		$this->defaultSettingsFilePath = "$this->baseDir/includes/DefaultSettings.php";
+		$this->definesFilePath = "$this->baseDir/includes/Defines.php";
 	}
 
 	/**
@@ -55,21 +69,24 @@ class MediaWikiInstance {
 		if ($this->version !== null) {
 			return $this->version;
 		}
-		$text = file_get_contents("$this->baseDir/includes/DefaultSettings.php");
-		preg_match('/\$wgVersion\s=\s\'(?<version>.*?)\';/',
-			$text, $matches);
-		if (isset($matches['version'])) {
-			$this->version = new MWVersion($matches['version']);
-		} else {
-			// Try to search MW_VERSION constant in includes/Defines.php because $wgVersion deprecated in Mediawiki 1.35
-			$text = file_get_contents("$this->baseDir/includes/Defines.php");
-			preg_match('/define\(\s\'MW_VERSION\',\s\'(?<version>.*?)\'\s\);/',
+		// Since Mediawiki 1.46, includes/DefaultSettings.php has been removed
+		if (file_exists($this->defaultSettingsFilePath)) {
+			$text = file_get_contents($this->defaultSettingsFilePath);
+			preg_match('/\$wgVersion\s=\s\'(?<version>.*?)\';/',
 				$text, $matches);
-			if (!isset($matches['version'])) {
-				throw new \RuntimeException('Failed to get MW version from DefaultSettings.php and Defines.php');
+			if (isset($matches['version'])) {
+				$this->version = new MWVersion($matches['version']);
+				return $this->version;
 			}
-			$this->version = new MWVersion($matches['version']);
 		}
+		// Try to search MW_VERSION constant in includes/Defines.php because $wgVersion deprecated in Mediawiki 1.35
+		$text = file_get_contents($this->definesFilePath);
+		preg_match('/define\(\s\'MW_VERSION\',\s\'(?<version>.*?)\'\s\);/',
+			$text, $matches);
+		if (!isset($matches['version'])) {
+			throw new \RuntimeException('Failed to get MW version from DefaultSettings.php and Defines.php');
+		}
+		$this->version = new MWVersion($matches['version']);
 		return $this->version;
 	}
 
